@@ -76,11 +76,17 @@ function init(){
 
   quizQuestions.forEach( function(q, qIndex) {
     let answerStr = "";
+    const answerOrder = randomRange(q.answer.length);
+    //aIndex = answerIndex
     q.answer.forEach(function(svar, aIndex) {
       answerStr += `
-      <li>
+      <li style="order: ${answerOrder, aIndex}">
         <label>
-            <input type = "radio" name="q-${qIndex}">
+            <input 
+              type = "radio" 
+              name="q-${qIndex}"
+              datacorrect="${q.correctAnswer === aIndex}" 
+            >
             ${svar}
         </label>
       </li>
@@ -91,39 +97,69 @@ function init(){
       quizStr += ` 
       <form>
         <h1>${q.question}</h1>
-        <ul>
+        <div class="alert"></div>
+        <ul style = "display: flex; flex-direction: column">
             ${answerStr}
         </ul>
+        <button type="submit">Submit</button> 
       </form>
       `
-    
-     /*
-  //let formElement = document.getElementById("myForm");
-  let h2 = document.createElement("h2");
-  h2.innerHTML = q.question;
-  quizElement.appendChild(h2);
-  let ul = document.createElement("ul");
-  ul.innerHTML = quizQuestions.answerStr;
-  //quizStr.appendChild(formElement);
-    */
-
 
   })
 
   quizElement.innerHTML = quizStr;
+
+  quizElement.addEventListener('submit', function(e) {
+    e.preventDefault(); //page won't refresh
+    //list all the answers in e.target
+    //e.target.querySelectorAll("li");
+    // check if radio button checked
+    const alert = e.target.querySelector("div.alert");
+    const selectedInput = e.target.querySelector("input[type=radio]:checked"); //only checked radio btns
+    //VIKITIG querySelectorAll to more than one answer
+    console.log(selectedInput); //kan radera rad
+    if(selectedInput === null){
+      alert.innerHTML = "Please select an answer!"
+    }
+    else if(selectedInput.dataset.correctAnswer === "true"){
+      alert.innerHTML = "That's true!" //funkar inte
+    }else{
+      alert.innerHTML = "Oops! Wrong!"
+    }
+
+
+  });
   //quizElement.appendChild(h2);
   //quizElement.innerHTML = h2;
   
-  //form
-  //    h1
-  //    div.alert
-  //    ul
-  //      li
-  //      ....
-  //    submit button
-}
+} // end of init()
 
 init() //activate add run it
 
-  
+//generate random number
+function random(n){
+  const r = Math.random() * n;
+  return Math.floor(r);
+
+}
+
+function randomRange(x){
+  // x for numbers
+  const arr = []; //making empty array
+  //counting from 0 to x -1 
+  for(let i=0; i<x; i++){
+    arr.push(i);
+  }
+  const randomArr = []; //new array
+  //if we dont remove the item from array
+  while(arr.length > 0){
+    const randomIndex = random(arr.length);
+    const randomNumber = arr[random(arr.length)]; //grab one of the numbers
+    randomArr.push(randomNumber);
+    arr.splice(randomIndex, 1); //remove one item att the randomIndex
+  }
+  return randomArr;
+}
+
+ //console.log(randomRange(10));
 
